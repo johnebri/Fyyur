@@ -43,13 +43,18 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    shows = db.relationship('Show', backref=db.backref('Venue', lazy='joined'), lazy = 'joined', cascade="all, delete-orphan")
-    #shows = db.relationship('Show', backref='venues', lazy='joined')
+
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    genres = db.Column(db.String(500))
+    website_link = db.Column(db.String(120))
+    seeking_talent = db.Column(db.String(20))
+    seeking_description = db.Column(db.String(120))
+    shows = db.relationship('Show', backref='venues', lazy='joined')
 
     def __repr__(self):
         return '<Venue %r>' % self.name
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    
 
 class Artist(db.Model):
     __tablename__ = 'artists'
@@ -104,33 +109,6 @@ def index():
 @app.route('/venues')
 def venues():
   # TODO: replace with real venues data.
-  #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-  # data = Venue.query.all()
-  # data = db.session.query(Venue).with_entities(db.distinct(Venue.city),Venue.state).order_by('state','city').all()
-  # data = Venue.query.distinct(Venue.city).all()
-
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }, {
-  #     "id": 3,
-  #     "name": "Park Square Live Music & Coffee",
-  #     "num_upcoming_shows": 1,
-  #   }]
-  # }, {
-  #   "city": "New York",
-  #   "state": "NY",
-  #   "venues": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }]
-
   data = []
   venues = []
   resultData = Venue.query.distinct(Venue.city, Venue.state).all()
@@ -285,7 +263,8 @@ def create_venue_submission():
     seeking_talent = request.get_json()['seeking_talent']
 
     venue = Venue(name = name, city = city, state = state, 
-    address = address, phone = phone, facebook_link = facebook_link, image_link = image_link)
+    address = address, phone = phone, genres=genres, facebook_link = facebook_link, 
+    image_link = image_link, website_link = website_link, seeking_talent = seeking_talent)
 
     db.session.add(venue)
     db.session.commit()

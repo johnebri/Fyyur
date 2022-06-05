@@ -65,6 +65,17 @@
     document.getElementById('form').onsubmit = function(e) {
       e.preventDefault();
       console.log(e);
+      
+      console.log("seeking_description : ", document.getElementById('seeking_description').value)
+
+      // get selected genres
+      const selectedGenres = [];
+      for (let option of document.getElementById('genres').options)
+      {
+          if (option.selectedGenres) {
+              selectedGenres.push(option.value);
+          }
+      }
 
       fetch('/venues/create', {
         method: 'POST',
@@ -74,7 +85,7 @@
           'state': document.getElementById('state').value,
           'address': document.getElementById('address').value,
           'phone': document.getElementById('phone').value,
-          'genres': document.getElementById('genres').value,
+          'genres': selectedGenres,
           'facebook_link': document.getElementById('facebook_link').value,
           'image_link': document.getElementById('image_link').value,
           'website_link': document.getElementById('website_link').value,
